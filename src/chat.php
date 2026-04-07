@@ -4,8 +4,17 @@
     //configurar o cabeçalho para responder JSON
     header('Content-Type: application/json');
 
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+
+    try {
+        $dotenv->load();
+    } catch (Exception $e) {
+        die(json_encode(['error' => 'Arquivo .env não encontrado!']));
+    }
+
+
     //Configurar API
-    $apiKey = 'sk-3c35d9679d6d45569656caf0e8380dd0';
+    $apiKey = $_ENV['DEEPSEEK_API_KEY'];
 
     $client = OpenAI::factory()
     ->withApiKey($apiKey)
