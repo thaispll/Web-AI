@@ -68,3 +68,30 @@ function appendMessage(role, content) {
     container.scrollTo({ top: container.scrollHeight, behavior: "smooth"});
 
 }
+
+function appendMessage(role, content) {
+    const div = document.createElement("div");
+    div.className = role === "user" ? "flex justify-end" : "flex justify-start";
+
+    const inner = document.createElement("div");
+    
+    // Estilos para ambos
+    if (role === "user") {
+        inner.className = "bg-blue-600 text-white p-4 rounded-2xl max-w-[85%] shadow-md";
+    } else {
+        inner.className = "bg-slate-800 border border-slate-700 p-4 rounded-2xl max-w-[85%] shadow-sm text-slate-100";
+    }
+
+    inner.innerHTML = marked.parse(content);
+
+    div.appendChild(inner);
+    container.appendChild(div);
+
+    setTimeout(() => {
+        inner.querySelectorAll("pre code").forEach((block) => {
+            hljs.highlightElement(block);
+        });
+    }, 10);
+
+    container.scrollTo({ top: container.scrollHeight, behavior: "smooth"});
+}
