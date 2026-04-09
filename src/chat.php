@@ -21,13 +21,21 @@
     ->withBaseUri('https://api.deepseek.com/v1')
     ->make();
 
+    //captura de mensagem no frontend
+    $json = file_get_contents("php://input");
+    $data = json_decode($json, true);
+    $userMessage = $data['message'] ?? '';
+
     if(empty($userMessage)){
         echo json_encode(['error'=> 'Mensagem vazia ou inválida.']);
         exit;
     }
 
-    //Histórico
+    //garantir que existe o Histórico
     $memoryPath = __DIR__ . '/../memory/chat_history.json';
+    if (!is_dir(__DIR__ . '/../memory')) {
+        mkdir(__DIR__ . '/../memory', 0777, true);
+    }
 
     $history = [];
     if (file_exists($memoryPath)){
@@ -70,7 +78,7 @@
 
         file_put_contents($memoryPath, json_encode($history, JSON_PRETTY_PRINT));
 
-        echo json_enconde(['reply' => $botReply]);
+        echo json_encode(['reply' => $botReply]);
 
     } catch(Exception $e) {
         echo json_encode(['error' => 'Erro na API: '. $e->getMessage()]);
